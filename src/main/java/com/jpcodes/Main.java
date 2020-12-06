@@ -78,7 +78,7 @@ public class Main {
             } else if (firstChar.equals(COMPACT)) {
                 System.out.println("Compacting");
             } else {
-                System.out.println("An invalid prefix value was provided: " + firstChar.toLowerCase());
+                System.out.println("An invalid prefix value was provided: " + firstChar);
                 return;
             }
 
