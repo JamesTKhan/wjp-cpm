@@ -1,6 +1,5 @@
 package com.jpcodes;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -23,8 +22,38 @@ public class Main {
             // Split string to array
             String[] inputArray = actionInputs.split(",");
 
-            // make sure we are getting the inputs.
-            System.out.println(Arrays.toString(inputArray));
+            parseInputs(inputArray);
+        }
+    }
+
+    /**
+     * Process each input command via switch statement
+     *
+     * @param inputs stdin to parse
+     */
+    private static void parseInputs(String[] inputs) {
+        // For each given input...
+        for (String input : inputs) {
+
+            input = input.trim();
+
+            // Get first character off the string
+            String firstChar = input.substring(0, 1).toLowerCase();
+
+            // Handle accordingly
+            switch (firstChar) {
+                case "p":
+                    System.out.println("Parking");
+                    break;
+                case "u":
+                    System.out.println("un-Parking");
+                    break;
+                case "c":
+                    System.out.println("Compacting");
+                    break;
+                default:
+                    System.out.println("Unknown value");
+            }
         }
     }
 }
