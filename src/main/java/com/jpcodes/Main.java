@@ -79,7 +79,7 @@ public class Main {
     }
 
     /**
-     * Process each input command via switch statement
+     * Process each input command via conditional statements
      *
      * @param inputs stdin to parse
      */

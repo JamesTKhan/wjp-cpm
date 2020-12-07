@@ -60,6 +60,11 @@ public class ParkingServiceImpl implements ParkingService {
         // New array of compacted cars
         ParkingSpace[] compactedSpaces = new ParkingSpace[maxSpaces];
 
+         /*
+            Despite having some unneeded iterations, this appears to perform faster than converting to ArrayList
+             and using streams due to performance of primitive array.
+         */
+
         // for each space in our new compact array...
         for (int i = 0; i < compactedSpaces.length; i++) {
 
