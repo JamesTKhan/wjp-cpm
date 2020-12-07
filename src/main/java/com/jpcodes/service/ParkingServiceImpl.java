@@ -1,5 +1,6 @@
 package com.jpcodes.service;
 
+import com.jpcodes.message.ErrorMessageEnum;
 import com.jpcodes.model.ParkingSpace;
 
 public class ParkingServiceImpl implements ParkingService {
@@ -31,7 +32,7 @@ public class ParkingServiceImpl implements ParkingService {
 
         if (!carParked) {
             // No empty spaces were found, parking lot is full
-            throw new IllegalArgumentException("Parking Garage is full! No space to fulfill request.");
+            throw new IllegalArgumentException(ErrorMessageEnum.GARAGE_FULL.getDescription());
         } else {
             currentTicket++;
         }
@@ -50,7 +51,7 @@ public class ParkingServiceImpl implements ParkingService {
         }
 
         if (!carFound) {
-            System.out.println("Car with ticket number " + ticketNumber + " is not in the parking lot.");
+            System.out.println(ErrorMessageEnum.CAR_NOT_FOUND.getDescription(String.valueOf(ticketNumber)));
         }
     }
 

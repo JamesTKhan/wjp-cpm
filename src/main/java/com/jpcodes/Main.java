@@ -1,5 +1,6 @@
 package com.jpcodes;
 
+import com.jpcodes.message.ErrorMessageEnum;
 import com.jpcodes.service.ParkingService;
 import com.jpcodes.service.ParkingServiceImpl;
 import com.jpcodes.service.PropertyService;
@@ -22,6 +23,11 @@ public class Main {
     public static ParkingService parkingService;
 
     /**
+     * User input that should stop the program
+     */
+    public static final String EXIT_CMD = "exit";
+
+    /**
      * Props to be initialized from application.props
      **/
     private static int MAX_SPACES;      // Max spaces the garage can hold
@@ -37,10 +43,10 @@ public class Main {
         try {
             initializeProps();
         } catch (FileNotFoundException ex) {
-            System.out.println("Properties file was not found.");
+            System.out.println(ex.getMessage());
             return;
         } catch (IOException ex) {
-            System.out.println("Error while reading properties file.");
+            System.out.println(ErrorMessageEnum.ERR_READ_FILE.getDescription());
             return;
         }
 
@@ -58,7 +64,7 @@ public class Main {
         while (scanner.hasNext()) {
             actionInputs = scanner.nextLine();
 
-            if (actionInputs.trim().equals("exit")) {
+            if (actionInputs.trim().equalsIgnoreCase(EXIT_CMD)) {
                 break;
             }
 
@@ -105,7 +111,7 @@ public class Main {
                 try {
                     ticketNumber = Integer.parseInt(ticketString);
                 } catch (NumberFormatException ex) {
-                    System.out.println("Ticket number was not an integer value: " + ticketString);
+                    System.out.println(ErrorMessageEnum.TICKET_NOT_INTEGER.getDescription(ticketString));
                     System.out.println("Original command: " + input);
                     return;
                 }
@@ -114,7 +120,7 @@ public class Main {
             } else if (firstChar.equals(COMPACT)) {
                 parkingService.compactCars();
             } else {
-                System.out.println("An invalid prefix value was provided: " + firstChar.toLowerCase());
+                System.out.println(ErrorMessageEnum.INVALID_PREFIX.getDescription(firstChar));
                 return;
             }
 

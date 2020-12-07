@@ -1,5 +1,7 @@
 package com.jpcodes.service;
 
+import com.jpcodes.message.ErrorMessageEnum;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +18,7 @@ public class PropertyServiceImpl implements PropertyService {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream inputStream = classLoader.getResourceAsStream(fileName)) {
             if (inputStream == null) {
-                throw new FileNotFoundException("Properties file was not found.");
+                throw new FileNotFoundException(ErrorMessageEnum.PROP_FILE_NOT_FOUND.getDescription());
             }
 
             properties.load(inputStream);
@@ -29,7 +31,7 @@ public class PropertyServiceImpl implements PropertyService {
         if (property != null) {
             return properties.getProperty(key);
         } else {
-            throw new InvalidParameterException("No property found with key " + key);
+            throw new InvalidParameterException(ErrorMessageEnum.PROP_NOT_FOUND.getDescription(key));
         }
     }
 }
