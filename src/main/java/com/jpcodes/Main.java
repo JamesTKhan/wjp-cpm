@@ -1,5 +1,7 @@
 package com.jpcodes;
 
+import com.jpcodes.service.ParkingService;
+import com.jpcodes.service.ParkingServiceImpl;
 import com.jpcodes.service.PropertyService;
 import com.jpcodes.service.PropertyServiceImpl;
 
@@ -15,8 +17,15 @@ public class Main {
     public static PropertyService propertyService = new PropertyServiceImpl();
 
     /**
+     * ParkingService for handling park actions
+     **/
+    public static ParkingService parkingService;
+
+    /**
      * Props to be initialized from application.props
      **/
+    private static int MAX_SPACES;      // Max spaces the garage can hold
+    public static int TICKET_START;     // Ticket start count
     public static String DELIMITER;     // Delimiter for parsing inputs
     public static String PARK;          // Prefix for park action
     public static String UN_PARK;       // Prefix for un-park action
@@ -35,6 +44,9 @@ public class Main {
             return;
         }
 
+        // Initialize our parking service with configs
+        parkingService = new ParkingServiceImpl(MAX_SPACES, DELIMITER, TICKET_START);
+
         // Prompt user
         System.out.println("Please provide comma delimited list of actions... Type exit to end.");
 
@@ -42,6 +54,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String actionInputs;
 
+        // Start main application loop
         while (scanner.hasNext()) {
             actionInputs = scanner.nextLine();
 
@@ -75,17 +88,39 @@ public class Main {
 
             // Handle accordingly
             if (firstChar.equals(PARK)) {
-                System.out.println("Parking");
+                try {
+                    parkingService.parkCar(input.substring(1));
+                } catch (IllegalArgumentException ex) {
+                    System.out.println(ex.getMessage());
+                    // Error parking car, likely there was no room, lets print out current occupancy
+                    System.out.print("Current Occupancy: ");
+                    parkingService.printParkingSpaces();
+                    return;
+                }
             } else if (firstChar.equals(UN_PARK)) {
-                System.out.println("un-Parking");
+                // Parse ticketNumber
+                int ticketNumber;
+                String ticketString = input.substring(1);
+
+                try {
+                    ticketNumber = Integer.parseInt(ticketString);
+                } catch (NumberFormatException ex) {
+                    System.out.println("Ticket number was not an integer value: " + ticketString);
+                    System.out.println("Original command: " + input);
+                    return;
+                }
+
+                parkingService.unParkCar(ticketNumber);
             } else if (firstChar.equals(COMPACT)) {
-                System.out.println("Compacting");
+                parkingService.compactCars();
             } else {
-                System.out.println("An invalid prefix value was provided: " + firstChar);
+                System.out.println("An invalid prefix value was provided: " + firstChar.toLowerCase());
                 return;
             }
 
         }
+
+        parkingService.printParkingSpaces();
     }
 
     /**
@@ -96,6 +131,8 @@ public class Main {
     private static void initializeProps() throws IOException {
         propertyService.loadProps("application.properties");
 
+        MAX_SPACES = Integer.parseInt(propertyService.getProp("max-spaces"));
+        TICKET_START = Integer.parseInt(propertyService.getProp("ticket-start"));
         DELIMITER = propertyService.getProp("delimiter");
         PARK = propertyService.getProp("prefix.park");
         UN_PARK = propertyService.getProp("prefix.un-park");
