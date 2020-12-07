@@ -54,6 +54,9 @@ public class Main {
 
             parseInputs(inputArray);
         }
+
+        // Close out the scanner
+        scanner.close();
     }
 
     /**
